@@ -1,0 +1,92 @@
+package com.example.quizpage;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+
+public class User implements Serializable {
+    private static ArrayList<User> userList = new ArrayList<>();
+
+    private String userId;
+    private String email;
+    private String userName;
+    private String password;
+    private String vacStatus;
+    private String covidRisk;
+    private String covidRiskUpdateTime;
+
+    public User(String userId, String email, String userName, String password, String vacStatus, String covidRisk, String covidRiskUpdateTime) {
+        this.userId = userId;
+        this.email = email;
+        this.userName = userName;
+        this.password = password;
+        this.vacStatus = vacStatus;
+        this.covidRisk = covidRisk;
+        this.covidRiskUpdateTime = covidRiskUpdateTime;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getVacStatus() {
+        return vacStatus;
+    }
+
+    public void setVacStatus(String vacStatus) {
+        this.vacStatus = vacStatus;
+    }
+
+    public String getCovidRisk() {
+        return covidRisk;
+    }
+
+    public void setCovidRisk(String covidRisk) {
+        this.covidRisk = covidRisk;
+    }
+
+    public static void setUserList(ArrayList<User> userList) {
+        User.userList = userList;
+    }
+
+    public String getCovidRiskUpdateTime() {
+        return covidRiskUpdateTime;
+    }
+
+    public void setCovidRiskUpdateTime(String covidRiskUpdateTime) {
+        this.covidRiskUpdateTime = covidRiskUpdateTime;
+    }
+
+    //Load account(s)
+    public static ArrayList<User> getUserList() {
+        return userList;
+    }
+
+}
