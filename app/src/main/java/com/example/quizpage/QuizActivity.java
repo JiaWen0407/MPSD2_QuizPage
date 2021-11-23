@@ -34,7 +34,7 @@ public class QuizActivity extends AppCompatActivity {
     //private List<Question> allQuestionList;
     private Question questionClass;
     private int index = 0;
-    private TextView tvQuestion, tvOptionA, tvOptionB, tvOptionC, tvOptionD;
+    private TextView tvQuestionNum, tvQuestion, tvOptionA, tvOptionB, tvOptionC, tvOptionD;
     private CardView cardOptionA, cardOptionB, cardOptionC, cardOptionD;
     private int correctCount = 0;
     private int wrongCount = 0;
@@ -61,6 +61,7 @@ public class QuizActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.timer_quiz);
 
         //TextView in activity_quiz.xml
+        tvQuestionNum = findViewById(R.id.quiz_question_num);
         tvQuestion = findViewById(R.id.quiz_question);
         tvOptionA = findViewById(R.id.cardOptionA);
         tvOptionB = findViewById(R.id.cardOptionB);
@@ -87,7 +88,7 @@ public class QuizActivity extends AppCompatActivity {
                     // Question Node
                     for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                         // questionId Node
-                        ArrayList<String> List = new ArrayList<>();
+                        //ArrayList<String> List = new ArrayList<>();
 
                         for (DataSnapshot snapshot2 : snapshot1.getChildren()) {
                             //Get the current child node
@@ -137,14 +138,17 @@ public class QuizActivity extends AppCompatActivity {
                         @Override
                         public void onFinish() {
                             //Window Time out
-                            Dialog dialog = new Dialog(QuizActivity.this, R.style.BlurTheme);
+                            Dialog dialog = new Dialog(QuizActivity.this,R.style.BlurTheme);
                             dialog.setContentView(R.layout.time_out_dialog);
                             dialog.findViewById(R.id.btn_quiz_try_again).setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    Intent intent = new Intent(QuizActivity.this, QuizCoverActivity.class);
-                                    startActivity(intent);
-                                }
+                                    //Close time out window & Next question
+                                    dialog.dismiss();
+                                    index++;
+                                    questionClass = allQuestionList.get(index);
+                                    colourReset();
+                                    setAllData();}
                             });
                             dialog.show();
                         }
@@ -154,176 +158,200 @@ public class QuizActivity extends AppCompatActivity {
                 }
             }
 
-                    //Set Quiz Question
-            private void setAllData() {
-                tvQuestion.setText(questionClass.getQuestion());
-                tvOptionA.setText(questionClass.getOptionA());
-                tvOptionB.setText(questionClass.getOptionB());
-                tvOptionC.setText(questionClass.getOptionC());
-                tvOptionD.setText(questionClass.getOptionD());
-                timerNum = 20;
-                countDownTimer.cancel();
-                countDownTimer.start();
-            }
-
-
-            public void correct(CardView cardView) {
-
-                cardView.setBackgroundColor(getResources().getColor(R.color.dark_green));
-
-                //Click button to the next question
-                btnNextQuiz.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View view) {
-                        correctCount++;
-                        index++;
-                        questionClass = list.get(index);
-                        colourReset();
-                        setAllData();
-                    }
-                });
-            }
-
-            public void wrong(CardView cardOptionA) {
-
-                cardOptionA.setBackgroundColor(getResources().getColor(R.color.dark_red));
-
-                btnNextQuiz.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        wrongCount++;
-                        if (index < list.size() - 1) {
-                            index++;
-                            questionClass = list.get(index);
-                            colourReset();
-                            setAllData();
-                        } else {
-                            quizResult();
-                        }
-                    }
-                });
-
-            }
-
-            //Quiz Result
-            private void quizResult() {
-                Intent intent = new Intent(QuizActivity.this, QuizResultActivity.class);
-                intent.putExtra("correct", correctCount);
-                intent.putExtra("wrong", wrongCount);
-                startActivity(intent);
-            }
-
-            public void enableButton() {
-                cardOptionA.setClickable(true);
-                cardOptionB.setClickable(true);
-                cardOptionC.setClickable(true);
-                cardOptionD.setClickable(true);
-            }
-
-            public void disableButton() {
-                cardOptionA.setClickable(false);
-                cardOptionB.setClickable(false);
-                cardOptionC.setClickable(false);
-                cardOptionD.setClickable(false);
-            }
-
-            //Set or change back the card view button to white colour
-            public void colourReset() {
-                cardOptionA.setBackgroundColor(getResources().getColor(R.color.white));
-                cardOptionB.setBackgroundColor(getResources().getColor(R.color.white));
-                cardOptionC.setBackgroundColor(getResources().getColor(R.color.white));
-                cardOptionD.setBackgroundColor(getResources().getColor(R.color.white));
-            }
-
-            public void optionAClick(View view) {
-
-                disableButton();
-
-                btnNextQuiz.setClickable(true);
-
-                if (questionClass.getOptionA().equals(questionClass.getAnswer())) {
-
-                    cardOptionA.setCardBackgroundColor(getResources().getColor(R.color.dark_green));
-
-                    if (index < list.size() - 1) {
-                        correct(cardOptionA);
-                    } else {
-                        quizResult();
-                    }
-
-                } else {
-                    wrong(cardOptionA);
-                }
-            }
-
-            public void optionBClick(View view) {
-
-                disableButton();
-
-                btnNextQuiz.setClickable(true);
-
-                if (questionClass.getOptionB().equals(questionClass.getAnswer())) {
-
-                    cardOptionB.setCardBackgroundColor(getResources().getColor(R.color.dark_green));
-
-                    if (index < list.size() - 1) {
-                        correct(cardOptionB);
-                    } else {
-                        quizResult();
-                    }
-
-                } else {
-                    wrong(cardOptionB);
-                }
-            }
-
-            public void optionCClick(View view) {
-
-                disableButton();
-
-                btnNextQuiz.setClickable(true);
-
-                if (questionClass.getOptionC().equals(questionClass.getAnswer())) {
-
-                    cardOptionC.setCardBackgroundColor(getResources().getColor(R.color.dark_green));
-
-                    if (index < list.size() - 1) {
-                        correct(cardOptionC);
-                    } else {
-                        quizResult();
-                    }
-
-                } else {
-                    wrong(cardOptionC);
-                }
-            }
-
-            public void optionDClick(View view) {
-
-                disableButton();
-
-                btnNextQuiz.setClickable(true);
-
-                if (questionClass.getOptionD().equals(questionClass.getAnswer())) {
-
-                    cardOptionD.setCardBackgroundColor(getResources().getColor(R.color.dark_green));
-
-                    if (index < list.size() - 1) {
-                        correct(cardOptionD);
-                    } else {
-                        quizResult();
-                    }
-
-                } else {
-                    wrong(cardOptionD);
-                }
-            }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
+    }
+
+    //Set Quiz Question
+    private void setAllData() {
+        int i = index + 1;
+        tvQuestionNum.setText("Question " + i);
+        tvQuestion.setText(questionClass.getQuestion());
+        tvOptionA.setText(questionClass.getOptionA());
+        tvOptionB.setText(questionClass.getOptionB());
+        tvOptionC.setText(questionClass.getOptionC());
+        tvOptionD.setText(questionClass.getOptionD());
+        timerNum = 20;
+        countDownTimer.cancel();
+        countDownTimer.start();
+
+    }
+
+
+    public void correct(CardView cardView) {
+
+        cardView.setBackgroundColor(getResources().getColor(R.color.dark_green));
+
+        //Click button to the next question
+        btnNextQuiz.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                correctCount++;
+                if (index < 4) {
+                    index++;
+                    questionClass = allQuestionList.get(index);
+                    colourReset();
+                    setAllData();
+                }else{
+                    quizResult();
+                }
+            }
+        });
+    }
+
+    public void wrong(CardView cardOptionA) {
+
+        cardOptionA.setBackgroundColor(getResources().getColor(R.color.dark_red));
+
+        btnNextQuiz.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                wrongCount++;
+                if (index < 4) {
+                    index++;
+                    questionClass = allQuestionList.get(index);
+                    colourReset();
+                    setAllData();
+                } else {
+                    quizResult();
+                }
+            }
+        });
+
+    }
+
+
+    //Quiz Result
+    private void quizResult() {
+        Intent intent = new Intent(QuizActivity.this, QuizResultActivity.class);
+        intent.putExtra("correct", correctCount);
+        intent.putExtra("wrong", wrongCount);
+        startActivity(intent);
+    }
+
+    public void enableButton() {
+        cardOptionA.setClickable(true);
+        cardOptionB.setClickable(true);
+        cardOptionC.setClickable(true);
+        cardOptionD.setClickable(true);
+    }
+
+    public void disableButton() {
+        cardOptionA.setClickable(false);
+        cardOptionB.setClickable(false);
+        cardOptionC.setClickable(false);
+        cardOptionD.setClickable(false);
+    }
+
+    //Set or change back the card view button to white colour
+    public void colourReset() {
+        cardOptionA.setBackgroundColor(getResources().getColor(R.color.white));
+        cardOptionB.setBackgroundColor(getResources().getColor(R.color.white));
+        cardOptionC.setBackgroundColor(getResources().getColor(R.color.white));
+        cardOptionD.setBackgroundColor(getResources().getColor(R.color.white));
+    }
+
+    public void optionAClick(View view) {
+
+        disableButton();
+
+        btnNextQuiz.setClickable(true);
+
+        if (questionClass.getOptionA().equals(questionClass.getAnswer())) {
+
+            cardOptionA.setCardBackgroundColor(getResources().getColor(R.color.dark_green));
+
+
+            if (index < 4) {
+                correct(cardOptionA);
+                enableButton();
+            } else {
+                correct(cardOptionA);
+                                   }
+
+        } else {
+            wrong(cardOptionA);
+            enableButton();
+        }
+    }
+
+    public void optionBClick(View view) {
+
+        disableButton();
+
+        btnNextQuiz.setClickable(true);
+
+        if (questionClass.getOptionB().equals(questionClass.getAnswer())) {
+
+            cardOptionB.setCardBackgroundColor(getResources().getColor(R.color.dark_green));
+
+
+            if (index < 4) {
+                correct(cardOptionB);
+                enableButton();
+            } else {
+                correct(cardOptionB);
+
+            }
+
+        } else {
+            wrong(cardOptionB);
+            enableButton();
+        }
+    }
+
+    public void optionCClick(View view) {
+
+        disableButton();
+
+        btnNextQuiz.setClickable(true);
+
+        if (questionClass.getOptionC().equals(questionClass.getAnswer())) {
+
+            cardOptionC.setCardBackgroundColor(getResources().getColor(R.color.dark_green));
+
+
+            if (index < 4) {
+                correct(cardOptionC);
+                enableButton();
+            } else {
+                correct(cardOptionC);
+
+            }
+
+        } else {
+            wrong(cardOptionC);
+            enableButton();
+        }
+    }
+
+    public void optionDClick(View view) {
+
+        disableButton();
+
+        btnNextQuiz.setClickable(true);
+
+        if (questionClass.getOptionD().equals(questionClass.getAnswer())) {
+
+            cardOptionD.setCardBackgroundColor(getResources().getColor(R.color.dark_green));
+
+
+            if (index < 4) {
+                correct(cardOptionD);
+                enableButton();
+            } else {
+                correct(cardOptionD);
+
+            }
+
+        } else {
+            wrong(cardOptionD);
+            enableButton();
+        }
     }
 }

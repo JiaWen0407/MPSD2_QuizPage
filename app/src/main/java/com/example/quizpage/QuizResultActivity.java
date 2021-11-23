@@ -35,7 +35,7 @@ public class QuizResultActivity extends AppCompatActivity {
         btnNewQuiz = findViewById(R.id.btn_new_quiz);
 
         circularProgressBar.setProgress(correct);
-        quizResult.setText(correct + "/9");
+        quizResult.setText(correct + "/5");
 
         btnNewQuiz.setOnClickListener(new View.OnClickListener() {
             @Override
